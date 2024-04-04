@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech</title>
+</head>
+<body>
+    <h1>Text to Speech</h1>
+    <textarea id="textInput" placeholder="Enter text..."></textarea>
+    <button onclick="sendText()">Convert to Speech</button>
+    <audio id="audioPlayer" controls style="display: none;"></audio>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8080/"); // WebSocket endpoint
+
+        socket.onopen = () => {
+            console.log("WebSocket connection established.");
+        };
+
+        socket.onmessage = (event) => {
+            // Play the received audio
+            const audioData = event.data;
+            const audioPlayer = document.getElementById("audioPlayer");
+            audioPlayer.src = URL.createObjectURL(new Blob([audioData], { type: "audio/mpeg" }));
+            audioPlayer.play();
+        };
+
+        function sendText() {
+            const textInput = document.getElementById("textInput").value;
+            socket.send(textInput); // Send text to WebSocket server
+        }
+    </script>
+</body>
+</html>
