@@ -4,6 +4,7 @@ from fastapi import FastAPI, WebSocket
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 import io
+import requests
 
 app = FastAPI()
 
@@ -55,7 +56,15 @@ async def generate_and_send_audio(text: str, websocket: WebSocket):
         # Send the entire audio data as a single chunk
         await websocket.send_bytes(audio_data)
 
+async def keep_alive():
+    while True:
+        # Send a GET request to the root endpoint of your FastAPI application
+        response = requests.get("http://localhost:8080/test")
+        # Optional: Log the response status code or any other relevant information
+        print(f"Keep-alive request status: {response.status_code}")
+        # Sleep for a certain duration (e.g., 5 minutes)
+        await asyncio.sleep(180)  # 300 seconds = 5 minutes
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=8080, workers=1, access_log=False)
