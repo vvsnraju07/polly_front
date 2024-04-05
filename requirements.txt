@@ -23,6 +23,7 @@ pydantic_core==2.16.3
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 PyYAML==6.0.1
+requests==2.31.0
 s3transfer==0.10.1
 six==1.16.0
 sniffio==1.3.1
